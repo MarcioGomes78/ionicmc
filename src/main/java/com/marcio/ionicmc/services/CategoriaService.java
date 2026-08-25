@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.marcio.ionicmc.domain.Categoria;
 import com.marcio.ionicmc.repositories.CategoriaRepository;
+import com.marcio.ionicmc.services.exception.ObjectNotFoundException;
 
 @Service // transforma a classe em um componente do Spring
 public class CategoriaService {
@@ -18,7 +19,14 @@ public class CategoriaService {
     }
 
     public Categoria find(Integer id) {
+        // Busca o id no repositório
         Optional<Categoria> obj = repo.findById(id);
-        return obj.orElse(null);
+        // Se não encontrar, lança uma exceção
+        return obj.orElseThrow(() -> new ObjectNotFoundException(
+                    // id que não foi encontrado
+                "Objeto não encontrado: " + id 
+                // nome da classe que não foi encontrada
+                + ", Tipo: " + Categoria.class.getName()
+            ));
     }
 }

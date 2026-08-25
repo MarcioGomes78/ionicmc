@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,6 +32,7 @@ public class Produto implements Serializable {
 	// @JoinTable indica que vai ter uma tabela associativa
 	// @joinColumns indica a chave estrangeira da entidade que está mapeando (categoria)
 	// @inverseJoinColumns indica a chave estrangeira da outra entidade (produto)
+	@JsonBackReference
 	@JoinTable(name = "PRODUTO_CATEGORIA",
 		joinColumns = @JoinColumn(name = "produto_id"),
 		inverseJoinColumns = @JoinColumn(name = "categoria_id"))
