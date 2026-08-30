@@ -9,12 +9,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.marcio.ionicmc.domain.Categoria;
 import com.marcio.ionicmc.domain.Cidade;
+import com.marcio.ionicmc.domain.Cliente;
+import com.marcio.ionicmc.domain.Endereco;
 import com.marcio.ionicmc.domain.Estado;
 import com.marcio.ionicmc.domain.Produto;
 import com.marcio.ionicmc.repositories.CategoriaRepository;
 import com.marcio.ionicmc.repositories.CidadeRepository;
+import com.marcio.ionicmc.repositories.ClienteRepository;
+import com.marcio.ionicmc.repositories.EnderecoRepository;
 import com.marcio.ionicmc.repositories.EstadoRepository;
 import com.marcio.ionicmc.repositories.ProdutoRepository;
+import com.marcio.ionicmc.domain.enums.TipoCliente;
 
 
 @SpringBootApplication
@@ -31,6 +36,12 @@ public class IonicmcApplication implements CommandLineRunner {
 
 	@Autowired
 	private CidadeRepository cidadeRepository;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
+
+    @Autowired
+    private EnderecoRepository enderecoRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(IonicmcApplication.class, args);
@@ -68,5 +79,15 @@ public class IonicmcApplication implements CommandLineRunner {
 
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
-    }
+
+        Cliente cli1 = new Cliente(null, "Marcio Gomes", "mjgomes1978@gmail.com", "3631772000149", TipoCliente.PESSOA_FISICA);
+        cli1.getTelefones().addAll(Arrays.asList("27363323", "938383434"));
+
+        Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Centro", "38220834", cli1, c1);
+        Endereco e2 = new Endereco(null, "Avenida Matos", "100", "Casa", "Centro", "38220834", cli1, c2);
+
+        cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+
+        clienteRepository.saveAll(Arrays.asList(cli1));
+        enderecoRepository.saveAll(Arrays.asList(e1, e2));    }
 }
