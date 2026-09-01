@@ -2,6 +2,8 @@ package com.marcio.ionicmc.domain;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,20 +14,23 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Cidade implements Serializable {
 
-    //serialVersionUID é um identificador único de versão de uma classe
-    //serializável. É usado para garantir a compatibilidade entre versões da classe.
+    // serialVersionUID é um identificador único de versão de uma classe
+    // serializável. É usado para garantir a compatibilidade entre versões da
+    // classe.
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome;    
+    private String nome;
 
+    @JsonManagedReference
     @ManyToOne
-    @JoinColumn(name="estado_id")
+    @JoinColumn(name = "estado_id")
     private Estado estado;
 
-    public Cidade() {}
+    public Cidade() {
+    }
 
     public Cidade(Integer id, String nome, Estado estado) {
         super();
@@ -58,7 +63,7 @@ public class Cidade implements Serializable {
         this.estado = estado;
     }
 
-    //hashCode e equals para comparar objetos por id
+    // hashCode e equals para comparar objetos por id
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -67,7 +72,7 @@ public class Cidade implements Serializable {
         return result;
     }
 
-    //equals para comparar objetos por id
+    // equals para comparar objetos por id
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -85,9 +90,9 @@ public class Cidade implements Serializable {
         return true;
     }
 
-    //toString para exibir o objeto
+    // toString para exibir o objeto
     @Override
     public String toString() {
         return "Cidade [id=" + id + ", nome=" + nome + ", estado=" + estado + "]";
-    }    
+    }
 }

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.marcio.ionicmc.domain.enums.TipoCliente;
 
 import jakarta.persistence.CollectionTable;
@@ -18,7 +19,7 @@ import jakarta.persistence.OneToMany;
 
 @Entity
 public class Cliente implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -28,7 +29,8 @@ public class Cliente implements Serializable {
     private String email;
     private String cpfOuCnpj;
     private Integer tipo;
-    
+
+    @JsonManagedReference
     @OneToMany(mappedBy = "cliente")
     private List<Endereco> enderecos = new ArrayList<>();
 
@@ -128,5 +130,4 @@ public class Cliente implements Serializable {
         return true;
     }
 
-    
 }

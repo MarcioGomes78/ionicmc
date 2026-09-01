@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +16,8 @@ import jakarta.persistence.OneToMany;
 public class Estado implements Serializable {
 
     // serialVersionUID é um identificador único de versão de uma classe
-    // serializável. É usado para garantir a compatibilidade entre versões da classe.
+    // serializável. É usado para garantir a compatibilidade entre versões da
+    // classe.
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -22,16 +25,18 @@ public class Estado implements Serializable {
     private Integer id;
     private String name;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "estado")
     private List<Cidade> cidades = new ArrayList<>();
 
-    public Estado() {}
+    public Estado() {
+    }
 
     public Estado(Integer id, String name) {
         super();
         this.id = id;
-        this.name = name;     
-    }       
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;
@@ -57,7 +62,7 @@ public class Estado implements Serializable {
         this.cidades = cidades;
     }
 
-    //hashCode e equals para comparar objetos por id
+    // hashCode e equals para comparar objetos por id
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -66,7 +71,7 @@ public class Estado implements Serializable {
         return result;
     }
 
-    //equals para comparar objetos por id
+    // equals para comparar objetos por id
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -84,7 +89,7 @@ public class Estado implements Serializable {
         return true;
     }
 
-    //toString para exibir o objeto
+    // toString para exibir o objeto
     @Override
     public String toString() {
         return "Estado [id=" + id + ", name=" + name + "]";
