@@ -18,7 +18,7 @@ public class PedidoResource {
 	private PedidoService service;
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
+	public ResponseEntity<Pedido> find(@PathVariable Integer id) {
 		// Injeta o serviço e chama o método find
 		Pedido obj = service.find(id);
 		// Retorna o objeto encontrado com o código HTTP 200

@@ -22,7 +22,7 @@ public class CategoriaResource {
 	private CategoriaService service;
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
+	public ResponseEntity<Categoria> find(@PathVariable Integer id) {
 		// Injeta o serviço e chama o método find
 		Categoria obj = service.find(id);
 		// Retorna o objeto encontrado com o código HTTP 200
@@ -31,6 +31,7 @@ public class CategoriaResource {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> insert(@RequestBody Categoria obj) {
+		// O corpo da requisição é o objeto Categoria
 		obj = service.insert(obj);
 		// Adiciona a URI do novo recurso criado ao header da resposta
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -39,5 +40,16 @@ public class CategoriaResource {
 				.toUri();
 		// Retorna o objeto criado com o código HTTP 201
 		return ResponseEntity.created(uri).build();
+	}
+
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
+	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id) {
+		// Idempotência: o id da URI deve ser o mesmo do objeto
+		// Garante que o id da URI é o mesmo do objeto
+		obj.setId(id);
+		// Atualiza o objeto
+		obj = service.update(obj);
+		// Retorna o objeto atualizado com o código HTTP 204
+		return ResponseEntity.noContent().build();
 	}
 }
