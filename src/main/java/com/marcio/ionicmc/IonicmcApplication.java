@@ -13,6 +13,7 @@ import com.marcio.ionicmc.domain.Cidade;
 import com.marcio.ionicmc.domain.Cliente;
 import com.marcio.ionicmc.domain.Endereco;
 import com.marcio.ionicmc.domain.Estado;
+import com.marcio.ionicmc.domain.ItemPedido;
 import com.marcio.ionicmc.domain.Pagamento;
 import com.marcio.ionicmc.domain.PagamentoComBoleto;
 import com.marcio.ionicmc.domain.PagamentoComCartao;
@@ -25,6 +26,7 @@ import com.marcio.ionicmc.repositories.CidadeRepository;
 import com.marcio.ionicmc.repositories.ClienteRepository;
 import com.marcio.ionicmc.repositories.EnderecoRepository;
 import com.marcio.ionicmc.repositories.EstadoRepository;
+import com.marcio.ionicmc.repositories.ItemPedidoRepository;
 import com.marcio.ionicmc.repositories.PagamentoRepository;
 import com.marcio.ionicmc.repositories.PedidoRepository;
 import com.marcio.ionicmc.repositories.ProdutoRepository;
@@ -56,6 +58,9 @@ public class IonicmcApplication implements CommandLineRunner {
 
     @Autowired
     private PagamentoRepository pagamentoRepository;
+
+    @Autowired
+    private ItemPedidoRepository itemPedidoRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(IonicmcApplication.class, args);
@@ -119,5 +124,18 @@ public class IonicmcApplication implements CommandLineRunner {
 
         pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
         pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+
+        ItemPedido ip1 = new ItemPedido(ped1, p1, 0.00, 1, 2000.00); 
+        ItemPedido ip2 = new ItemPedido(ped1, p3, 0.00, 2, 80.00);
+        ItemPedido ip3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+
+        ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+        ped2.getItens().addAll(Arrays.asList(ip3));
+
+        p1.getItens().addAll(Arrays.asList(ip1));
+        p2.getItens().addAll(Arrays.asList(ip3));
+        p3.getItens().addAll(Arrays.asList(ip2));
+
+        itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
     }
 }
