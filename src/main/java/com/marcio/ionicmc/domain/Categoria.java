@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +20,6 @@ public class Categoria implements Serializable {
 	private Integer id;
 	private String name;
 
-	@JsonManagedReference
 	@ManyToMany(mappedBy = "categorias")
 	// @ManyToMany(mappedBy = "produtos") indica que essa entidade é dona do
 	// relacionamento, ou seja, a lista de categorias é mapeada pela anotação

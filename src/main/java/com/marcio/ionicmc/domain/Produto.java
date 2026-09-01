@@ -36,7 +36,7 @@ public class Produto implements Serializable {
 	// @JoinTable indica que vai ter uma tabela associativa
 	// @joinColumns indica a chave estrangeira da entidade que está mapeando (categoria)
 	// @inverseJoinColumns indica a chave estrangeira da outra entidade (produto)
-	@JsonBackReference
+	@JsonIgnore
 	@JoinTable(name = "PRODUTO_CATEGORIA",
 		joinColumns = @JoinColumn(name = "produto_id"),
 		inverseJoinColumns = @JoinColumn(name = "categoria_id"))
