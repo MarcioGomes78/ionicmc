@@ -1,11 +1,14 @@
 package com.marcio.ionicmc.services;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.marcio.ionicmc.domain.Categoria;
 import com.marcio.ionicmc.repositories.CategoriaRepository;
+import com.marcio.ionicmc.services.exception.DataIntegrityException;
 import com.marcio.ionicmc.services.exception.ObjectNotFoundException;
 
 @Service // transforma a classe em um componente do Spring
@@ -40,5 +43,19 @@ public class CategoriaService {
         find(obj.getId());
         // Salva o objeto
         return repo.save(obj);
+    }
+
+    public void delete(Integer id) {
+        // Busca o id no repositório
+        find(id);
+        try {
+            // Deleta o objeto
+            repo.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            // Lança uma exceção
+            throw new DataIntegrityException(
+                "Não é possível excluir uma categoria que possui produtos"
+            );
+        }
     }
 }

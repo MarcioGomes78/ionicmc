@@ -1,6 +1,7 @@
 package com.marcio.ionicmc.resources;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,12 @@ public class CategoriaResource {
 		// Atualiza o objeto
 		obj = service.update(obj);
 		// Retorna o objeto atualizado com o código HTTP 204
+		return ResponseEntity.noContent().build();
+	}
+
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Integer id) {
+		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 }
