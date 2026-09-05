@@ -4,8 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +18,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.marcio.ionicmc.domain.Categoria;
 import com.marcio.ionicmc.dto.CategoriaDTO;
 import com.marcio.ionicmc.services.CategoriaService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value="/categorias")
@@ -35,9 +37,9 @@ public class CategoriaResource {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@RequestBody Categoria obj) {
+	public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO objDto) {
 		// O corpo da requisição é o objeto Categoria
-		obj = service.insert(obj);
+		Categoria obj = service.insert(service.fromDTO(objDto));
 		// Adiciona a URI do novo recurso criado ao header da resposta
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")
@@ -48,11 +50,11 @@ public class CategoriaResource {
 	}
 
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
-	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id) {
+	public ResponseEntity<Void> update(@Valid @RequestBody CategoriaDTO objDto, @PathVariable Integer id) {
 		// Idempotência: o id da URI deve ser o mesmo do objeto
 		// Garante que o id da URI é o mesmo do objeto
+		Categoria obj = service.fromDTO(objDto);
 		obj.setId(id);
-		// Atualiza o objeto
 		obj = service.update(obj);
 		// Retorna o objeto atualizado com o código HTTP 204
 		return ResponseEntity.noContent().build();

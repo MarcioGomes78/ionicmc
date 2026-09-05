@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.marcio.ionicmc.domain.Categoria;
+import com.marcio.ionicmc.dto.CategoriaDTO;
 import com.marcio.ionicmc.repositories.CategoriaRepository;
 import com.marcio.ionicmc.services.exception.DataIntegrityException;
 import com.marcio.ionicmc.services.exception.ObjectNotFoundException;
@@ -66,8 +67,17 @@ public class CategoriaService {
         return repo.findAll();
     }
 
+    //método para buscar categorias por páginação e ordenação
     public Page<Categoria> findPage(Integer page, Integer linePerPage, String orderBy, String direction) {
+        //Criação do PageRequest com os parâmetros fornecidos
         PageRequest pageRequest = PageRequest.of(page, linePerPage, Direction.valueOf(direction), orderBy);
+        //Retorna a página de categorias
         return repo.findAll(pageRequest);
+    }
+
+    //método para converter CategoriaDTO para Categoria
+    public Categoria fromDTO(CategoriaDTO objDto) {
+        //Criação do objeto Categoria com os dados do DTO
+        return new Categoria(objDto.getId(), objDto.getName());
     }
 }
