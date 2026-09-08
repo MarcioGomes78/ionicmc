@@ -1,5 +1,6 @@
 package com.marcio.ionicmc.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.marcio.ionicmc.domain.Cliente;
 import com.marcio.ionicmc.dto.ClienteDTO;
+import com.marcio.ionicmc.dto.ClienteNewDTO;
 import com.marcio.ionicmc.services.ClienteService;
 
 import jakarta.validation.Valid;
@@ -32,6 +35,20 @@ public class ClienteResource {
 		Cliente obj = service.find(id);
 		// Retorna o objeto encontrado com o código HTTP 200
 		return ResponseEntity.ok(obj);
+	}
+
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
+		// O corpo da requisição é o objeto Categoria
+		Cliente obj = service.fromDTO(objDto);
+		obj = service.insert(obj);
+		// Adiciona a URI do novo recurso criado ao header da resposta
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(obj.getId())
+				.toUri();
+		// Retorna o objeto criado com o código HTTP 201
+		return ResponseEntity.created(uri).build();
 	}
 
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
