@@ -3,6 +3,7 @@ package com.marcio.ionicmc.domain;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.marcio.ionicmc.domain.enums.EstadoPagamento;
 
 import jakarta.persistence.Entity;
@@ -19,6 +20,8 @@ import jakarta.persistence.OneToOne;
 // Com isso basta mapearmos a suclasses com @Entity para que o JPA 
 // consiga inserir os dados corretamente.
 @Inheritance(strategy = InheritanceType.JOINED)
+//@JsonTypeInfo ajuda o Jackson a identificar qual é a classe concreta quando o objeto está mapeado como Pagamento.
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 public abstract class Pagamento implements Serializable {
     private static final long serialVersionUID = 1L;
 
