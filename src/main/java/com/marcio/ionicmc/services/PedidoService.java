@@ -19,12 +19,8 @@ import com.marcio.ionicmc.services.exception.ObjectNotFoundException;
 @Service // transforma a classe em um componente do Spring
 public class PedidoService<itemPedidoRepository> {
 
-    private final PedidoRepository repo; // injeção de dependência
-
-    // Construtor para injeção de dependência
-    public PedidoService(PedidoRepository repo) {
-        this.repo = repo;
-    }
+    @Autowired
+    private PedidoRepository repo; // injeção de dependência
 
     @Autowired
     private BoletoService boletoService;
@@ -40,6 +36,9 @@ public class PedidoService<itemPedidoRepository> {
 
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private EmailService emailService;
 
     public Pedido find(Integer id) {
         // Busca o id no repositório
@@ -79,7 +78,8 @@ public class PedidoService<itemPedidoRepository> {
             ip.setPedido(obj);
         }
         itemPedidoRepository.saveAll(obj.getItens());
-        System.out.println(obj);  // DEBUG
+        //enviando email de confirmação de pedido
+        emailService.sendOrderConfirmationEmail(obj);
         return obj;
     }
 }
