@@ -38,6 +38,9 @@ public class PedidoService<itemPedidoRepository> {
     @Autowired
     private ItemPedidoRepository itemPedidoRepository;
 
+    @Autowired
+    private ClienteService clienteService;
+
     public Pedido find(Integer id) {
         // Busca o id no repositório
         Optional<Pedido> obj = repo.findById(id);
@@ -54,6 +57,9 @@ public class PedidoService<itemPedidoRepository> {
     public Pedido insert(Pedido obj) {
         obj.setId(null);
         obj.setInstant(new Date());
+        //configurando o cliente
+        obj.setCliente(clienteService.find(obj.getCliente().getId()));
+        //configurando o endereço do pedido como endereço de entrega
         obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
         obj.getPagamento().setPedido(obj);
         if (obj.getPagamento() instanceof PagamentoComBoleto) {
@@ -64,11 +70,16 @@ public class PedidoService<itemPedidoRepository> {
         repo.save(obj);
         pagamentoRepository.save(obj.getPagamento());
         for (ItemPedido ip : obj.getItens()) {
+            //configurando o desconto
             ip.setDesconto(0.0);
+            ip.setProduto(produtoService.find(ip.getProduto().getId()));
+            //configurando o preço do item
             ip.setPreco(produtoService.find(ip.getProduto().getId()).getPrice());
+            //configurando o pedido
             ip.setPedido(obj);
         }
         itemPedidoRepository.saveAll(obj.getItens());
+        System.out.println(obj);  // DEBUG
         return obj;
     }
 }

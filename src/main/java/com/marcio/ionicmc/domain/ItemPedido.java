@@ -1,5 +1,7 @@
 package com.marcio.ionicmc.domain;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -96,5 +98,22 @@ public class ItemPedido {
             return false;
         ItemPedido other = (ItemPedido) obj;
         return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public String toString() {
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR"));
+        StringBuilder sb = new StringBuilder();
+        sb.append(getProduto().getName());
+        sb.append(", Qtde: ");
+        sb.append(getQuantidade());
+        sb.append(", Preço Unitário: ");
+        sb.append(nf.format(getPreco()));
+        sb.append(", Desconto: ");
+        sb.append(nf.format(getDesconto()));
+        sb.append(", Subtotal: ");
+        sb.append(nf.format(getSubTotal()));
+        sb.append("\n");
+        return sb.toString();
     }
 }
