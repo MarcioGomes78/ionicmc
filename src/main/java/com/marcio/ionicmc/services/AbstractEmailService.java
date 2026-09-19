@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.marcio.ionicmc.domain.Pedido;
 
 @Service
-public abstract class AbstratictEmailService implements EmailService {
+public abstract class AbstractEmailService implements EmailService {
 
     @Value("${default.sender}")
     private String sender;

@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.marcio.ionicmc.services.DBService;
+import com.marcio.ionicmc.services.EmailService;
+import com.marcio.ionicmc.services.SmtpEmailService;
 
 @Configuration
 @Profile("dev")
@@ -17,16 +19,22 @@ public class DevConfig {
     @Autowired
     private DBService dbService;
 
-    //retorna o valor da chave spring.jpa.hibernate.ddl-auto do arquivo application-dev.properties
+    // retorna o valor da chave spring.jpa.hibernate.ddl-auto do arquivo
+    // application-dev.properties
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String strategy;
-    
+
     @Bean
     public boolean dbInit() throws ParseException {
-        if(!"create".equals(strategy)){
+        if (!"create".equals(strategy)) {
             return false;
         }
         dbService.instantiateTestDatabase();
         return true;
+    }
+
+    @Bean
+    public EmailService emailService() {
+        return new SmtpEmailService();
     }
 }
