@@ -8,8 +8,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.marcio.ionicmc.domain.Cidade;
 import com.marcio.ionicmc.domain.Cliente;
@@ -26,6 +26,8 @@ import com.marcio.ionicmc.services.exception.ObjectNotFoundException;
 @Service // transforma a classe em um componente do Spring
 public class ClienteService {
     // Injeção de dependência via construtor (recomendado)
+    @Autowired 
+    private BCryptPasswordEncoder pe;
     private final ClienteRepository repo;
     private final CidadeRepository cidadeRepository;
     private final EnderecoRepository enderecoRepository;
@@ -66,13 +68,13 @@ public class ClienteService {
     // método para converter ClienteDTO para Cliente
     public Cliente fromDTO(ClienteDTO objDto) {
         // Criação do objeto Categoria com os dados do DTO
-        return new Cliente(objDto.getId(), objDto.getName(), objDto.getEmail(), null, null);
+        return new Cliente(objDto.getId(), objDto.getName(), objDto.getEmail(), null, null, null);
     }
 
     // método para converter ClienteNewDTO para Cliente
     public Cliente fromDTO(ClienteNewDTO objDto) {
         // Criação do objeto Cliente com os dados do DTO
-        Cliente cli = new Cliente(null, objDto.getName(), objDto.getEmail(), objDto.getCpfOuCnpj(),TipoCliente.toEnum(objDto.getTipo()));
+        Cliente cli = new Cliente(null, objDto.getName(), objDto.getEmail(), objDto.getCpfOuCnpj(),TipoCliente.toEnum(objDto.getTipo()), pe.encode(objDto.getSenha()));
         // verifica se a cidade foi informada
         if (objDto.getCidadeId() == null) {
             throw new IllegalArgumentException("O ID da cidade não pode ser nulo. Verifique os dados da requisição.");
