@@ -5,13 +5,15 @@ import org.springframework.stereotype.Service;
 
 import com.marcio.ionicmc.domain.Pedido;
 
+import jakarta.mail.internet.MimeMessage;
+
 @Service
 public interface EmailService {
     void sendOrderConfirmationEmail(Pedido obj);
 
     void sendEmail(SimpleMailMessage msg);
 
-    // void sendOrderConfirmationHtmlEmail(Pedido obj);
+    void sendOrderConfirmationHtmlEmail(Pedido obj);
 
-    // void sendHtmlEmail(MimeMessage msg);
+    void sendHtmlEmail(MimeMessage msg);
 }
