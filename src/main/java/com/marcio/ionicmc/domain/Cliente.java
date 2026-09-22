@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.marcio.ionicmc.domain.enums.Perfil;
 import com.marcio.ionicmc.domain.enums.TipoCliente;
 
 import jakarta.persistence.CascadeType;
@@ -14,6 +16,7 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,6 +46,10 @@ public class Cliente implements Serializable {
     @CollectionTable(name = "TELEFONE")
     private Set<String> telefones = new HashSet<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "PERFIS")
+    private Set<Integer> perfis = new HashSet<>();
+
     // JsonIgnore para evitar erro de entidade trasiente, com isso não
     // serializamos o pedido
     @JsonIgnore
@@ -50,6 +57,7 @@ public class Cliente implements Serializable {
     private List<Pedido> pedidos = new ArrayList<>();
 
     public Cliente() {
+        addPerfil(Perfil.CLIENTE);
     }
 
     public Cliente(Integer id, String name, String email, String cpfOuCnpj, TipoCliente tipo, String senha) {
@@ -60,6 +68,7 @@ public class Cliente implements Serializable {
         // Se o tipo for nulo, não atribui nada, senão atribui o código do tipo (int)
         this.tipo = (tipo == null) ? null : tipo.getCod();
         this.senha = senha;
+        addPerfil(Perfil.CLIENTE);
     }
 
     public Integer getId() {
@@ -108,6 +117,16 @@ public class Cliente implements Serializable {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    // Transforma o Set<Integer> em Set<Perfil> para facilitar o trabalho com perfis
+    public Set<Perfil> getPerfis() {
+        return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
+    }
+
+    // Adiciona um perfil ao Set de perfis
+    public void addPerfil(Perfil perfil) {
+        perfis.add(perfil.getCod());
     }
 
     public List<Endereco> getEnderecos() {
