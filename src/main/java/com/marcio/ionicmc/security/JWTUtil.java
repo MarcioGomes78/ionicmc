@@ -38,7 +38,7 @@ public class JWTUtil {
         return false;
     }
 
-    // Obter claims
+    // Obter claims? reinvidicações do usuario
     public Claims getClaims(String token) {
         try {
             return Jwts.parser()
