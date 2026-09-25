@@ -143,6 +143,8 @@ public class DBService {
 
         Pedido ped1 = new Pedido(null, sdf.parse("30/09/2016 10:32"), cli1, e1);
         Pedido ped2 = new Pedido(null, sdf.parse("10/10/2016 11:32"), cli1, e2);
+        Pedido ped3 = new Pedido(null, sdf.parse("11/10/2016 11:32"), cli2, e3);
+        Pedido ped4 = new Pedido(null, sdf.parse("12/10/2016 11:32"), cli2, e3);
 
         Pagamento pag1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
         pag1.setPedido(ped1);
@@ -152,19 +154,31 @@ public class DBService {
         pag2.setPedido(ped2);
         ped2.setPagamento(pag2);
 
-        pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
-        pagamentoRepository.saveAll(Arrays.asList(pag1, pag2));
+        Pagamento pag3 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped3, 5);
+        pag3.setPedido(ped3);
+        ped3.setPagamento(pag3);
+
+        Pagamento pag4 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped4, sdf.parse("20/10/2016 00:00"), null);
+        pag4.setPedido(ped4);
+        ped4.setPagamento(pag4);
+
+        pedidoRepository.saveAll(Arrays.asList(ped1, ped2, ped3, ped4));
+        pagamentoRepository.saveAll(Arrays.asList(pag1, pag2, pag3, pag4));
 
         ItemPedido ip1 = new ItemPedido(ped1, p1, 0.00, 1, 2000.00);
         ItemPedido ip2 = new ItemPedido(ped1, p2, 0.00, 2, 80.00);
         ItemPedido ip3 = new ItemPedido(ped2, p2, 0.00, 2, 80.00);
+        ItemPedido ip4 = new ItemPedido(ped3, p3, 0.00, 1, 100.00);
+        ItemPedido ip5 = new ItemPedido(ped4, p4, 0.00, 2, 200.00);
 
         ped1.getItens().addAll(Arrays.asList(ip1, ip2));
         ped2.getItens().addAll(Arrays.asList(ip3));
+        ped3.getItens().addAll(Arrays.asList(ip4));
+        ped4.getItens().addAll(Arrays.asList(ip5));
 
         p1.getItens().addAll(Arrays.asList(ip1));
-        p2.getItens().addAll(Arrays.asList(ip2, ip3));
+        p2.getItens().addAll(Arrays.asList(ip2, ip3, ip4, ip5));
 
-        itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
+        itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3, ip4, ip5));
     }
 }

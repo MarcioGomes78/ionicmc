@@ -4,9 +4,13 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.marcio.ionicmc.domain.Cliente;
 import com.marcio.ionicmc.domain.ItemPedido;
 import com.marcio.ionicmc.domain.PagamentoComBoleto;
 import com.marcio.ionicmc.domain.Pedido;
@@ -14,6 +18,8 @@ import com.marcio.ionicmc.domain.enums.EstadoPagamento;
 import com.marcio.ionicmc.repositories.ItemPedidoRepository;
 import com.marcio.ionicmc.repositories.PagamentoRepository;
 import com.marcio.ionicmc.repositories.PedidoRepository;
+import com.marcio.ionicmc.security.UserSS;
+import com.marcio.ionicmc.services.exception.AuthorizationException;
 import com.marcio.ionicmc.services.exception.ObjectNotFoundException;
 
 @Service // transforma a classe em um componente do Spring
@@ -81,5 +87,20 @@ public class PedidoService<itemPedidoRepository> {
         //enviando email de confirmação de pedido
         emailService.sendOrderConfirmationHtmlEmail(obj);
         return obj;
+    }
+
+    public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+        UserSS user = UserService.authenticated();
+        //verificando se o usuário está logado e se ele é admin
+        if (user==null) {
+            //se não for admin, lança uma exceção
+            throw new AuthorizationException("Acesso negado");
+        }
+        //instanciando o page request com os parâmetros passados
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+        //retornando a paginação
+        Cliente cliente = clienteService.find(user.getId());
+
+        return repo.findByCliente(cliente, pageRequest);
     }
 }
