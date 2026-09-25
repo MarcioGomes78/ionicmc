@@ -14,12 +14,15 @@ import org.springframework.stereotype.Service;
 import com.marcio.ionicmc.domain.Cidade;
 import com.marcio.ionicmc.domain.Cliente;
 import com.marcio.ionicmc.domain.Endereco;
+import com.marcio.ionicmc.domain.enums.Perfil;
 import com.marcio.ionicmc.domain.enums.TipoCliente;
 import com.marcio.ionicmc.dto.ClienteDTO;
 import com.marcio.ionicmc.dto.ClienteNewDTO;
 import com.marcio.ionicmc.repositories.CidadeRepository;
 import com.marcio.ionicmc.repositories.ClienteRepository;
 import com.marcio.ionicmc.repositories.EnderecoRepository;
+import com.marcio.ionicmc.security.UserSS;
+import com.marcio.ionicmc.services.exception.AuthorizationException;
 import com.marcio.ionicmc.services.exception.DataIntegrityException;
 import com.marcio.ionicmc.services.exception.ObjectNotFoundException;
 
@@ -39,6 +42,13 @@ public class ClienteService {
     }
     
     public Cliente find(Integer id) {
+
+        UserSS user = UserService.authenticated();
+        //Verifica se o usuário está logado e se o id do usuário é diferente do id do cliente
+        if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+            //Se não for, lança uma exceção
+            throw new AuthorizationException("Acesso negado");
+        }
         // Busca o id no repositório
         Optional<Cliente> obj = repo.findById(id);
         // Se não encontrar, lança uma exceção

@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.marcio.ionicmc.services.exception.AuthorizationException;
 import com.marcio.ionicmc.services.exception.DataIntegrityException;
 import com.marcio.ionicmc.services.exception.ObjectNotFoundException;
 
@@ -52,5 +53,17 @@ public class ResourceExceptionHandler {
         }
         // retorna o objeto StandarError com o código HTTP 200
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+    @ExceptionHandler(AuthorizationException.class) // indica que é um método que trata a exceção ObjectNotFoundException
+    public ResponseEntity<StandarError> authorizationException(AuthorizationException e, HttpServletRequest request) { // recebe a exceção como parâmetro
+        // cria o objeto StandarError
+        StandarError err = new StandarError(
+                HttpStatus.FORBIDDEN.value(), // código HTTP 403
+                e.getMessage(), // mensagem da exceção
+                System.currentTimeMillis());// timestamp atual
+        
+        // retorna o objeto StandarError com o código HTTP 200
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
     }
 }
