@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -26,6 +27,7 @@ import com.marcio.ionicmc.security.JWTUtil;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
@@ -43,8 +45,11 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_MATCHERS_GET = {
             "/categorias/**",
-            "/produtos/**",
-            "/clientes/**"  
+            "/produtos/**"
+    };
+
+    private static final String[] PUBLIC_MATCHERS_POST = {
+        "/clientes/**"
     };
 
     @Bean
@@ -65,6 +70,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_MATCHERS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
+                        .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                         .anyRequest().authenticated());
         http.addFilter(new JWTAuthenticationFilter(authenticationManager, jwtUtil));
         http.addFilter(new JWTAuthorizationFilter(authenticationManager, jwtUtil, userDetailsService));
