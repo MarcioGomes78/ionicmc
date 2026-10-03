@@ -39,17 +39,21 @@ public class SecurityConfig {
     @Autowired
     private JWTUtil jwtUtil;
 
+    //Caminhos liberados para teste
     private static final String[] PUBLIC_MATCHERS = {
             "/h2-console/**"
     };
 
+    //Caminhos liberados para teste GET
     private static final String[] PUBLIC_MATCHERS_GET = {
             "/categorias/**",
             "/produtos/**"
     };
 
+    //Caminhos liberados para teste POST
     private static final String[] PUBLIC_MATCHERS_POST = {
-        "/clientes/**"
+        "/clientes/**",
+        "/auth/forgot/**"
     };
 
     @Bean
