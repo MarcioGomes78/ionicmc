@@ -7,8 +7,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.marcio.ionicmc.services.exception.AuthorizationException;
 import com.marcio.ionicmc.services.exception.DataIntegrityException;
+import com.marcio.ionicmc.services.exception.FileException;
 import com.marcio.ionicmc.services.exception.ObjectNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -66,4 +70,55 @@ public class ResourceExceptionHandler {
         // retorna o objeto StandarError com o código HTTP 200
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
     }
+
+    @ExceptionHandler(FileException.class) // indica que é um método que trata a exceção FileException
+    public ResponseEntity<StandarError> fileException(FileException e, HttpServletRequest request) { // recebe a exceção como parâmetro
+        // cria o objeto StandarError
+        StandarError err = new StandarError(
+                HttpStatus.BAD_REQUEST.value(), // código HTTP 400
+                e.getMessage(), // mensagem da exceção
+                System.currentTimeMillis());// timestamp atual
+        
+        // retorna o objeto StandarError com o código HTTP 200
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+     @ExceptionHandler(AmazonServiceException.class) // indica que é um método que trata a exceção AmazonS3Exception
+    public ResponseEntity<StandarError> amazonServiceException(AmazonServiceException e, HttpServletRequest request) { // recebe a exceção como parâmetro
+        HttpStatus code = HttpStatus.valueOf(e.getErrorCode());
+
+        StandarError err = new StandarError(
+                code.value(), // código HTTP 400
+                e.getMessage(), // mensagem da exceção
+                System.currentTimeMillis());// timestamp atual
+        
+        // retorna o objeto StandarError com o código HTTP 200
+        return ResponseEntity.status(code).body(err);
+    }
+
+     @ExceptionHandler(AmazonClientException.class) // indica que é um método que trata a exceção AmazonS3Exception
+    public ResponseEntity<StandarError> amazonClientException(AmazonClientException e, HttpServletRequest request) { // recebe a exceção como parâmetro
+        // cria o objeto StandarError
+        StandarError err = new StandarError(
+                HttpStatus.BAD_REQUEST.value(), // código HTTP 400
+                e.getMessage(), // mensagem da exceção
+                System.currentTimeMillis());// timestamp atual
+        
+        // retorna o objeto StandarError com o código HTTP 200
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+    @ExceptionHandler(AmazonS3Exception.class) // indica que é um método que trata a exceção AmazonS3Exception
+    public ResponseEntity<StandarError> amazonS3Exception(AmazonS3Exception e, HttpServletRequest request) { // recebe a exceção como parâmetro
+        // cria o objeto StandarError
+        StandarError err = new StandarError(
+                HttpStatus.BAD_REQUEST.value(), // código HTTP 400
+                e.getMessage(), // mensagem da exceção
+                System.currentTimeMillis());// timestamp atual
+        
+        // retorna o objeto StandarError com o código HTTP 200
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+
 }
