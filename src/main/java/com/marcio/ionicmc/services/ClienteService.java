@@ -1,5 +1,6 @@
 package com.marcio.ionicmc.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.marcio.ionicmc.domain.Cidade;
 import com.marcio.ionicmc.domain.Cliente;
@@ -34,11 +36,13 @@ public class ClienteService {
     private final ClienteRepository repo;
     private final CidadeRepository cidadeRepository;
     private final EnderecoRepository enderecoRepository;
+    private final S3Service s3Service;
 
-    public ClienteService(ClienteRepository repo, CidadeRepository cidadeRepository, EnderecoRepository enderecoRepository) {
+    public ClienteService(ClienteRepository repo, CidadeRepository cidadeRepository, EnderecoRepository enderecoRepository, S3Service s3Service) {
         this.repo = repo;
         this.cidadeRepository = cidadeRepository;
         this.enderecoRepository = enderecoRepository;
+        this.s3Service = s3Service;
     }
     
     public Cliente find(Integer id) {
@@ -141,5 +145,10 @@ public class ClienteService {
         PageRequest pageRequest = PageRequest.of(page, linePerPage, Direction.valueOf(direction), orderBy);
         // Retorna a página de categorias
         return repo.findAll(pageRequest);
+    }
+
+    public URI uploadProfilePicture(MultipartFile multipartFile) {
+        // Upload do arquivo
+        return s3Service.uploadFile(multipartFile);
     }
 }

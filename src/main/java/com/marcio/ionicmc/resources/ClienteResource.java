@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.marcio.ionicmc.domain.Cliente;
@@ -89,5 +90,13 @@ public class ClienteResource {
 		Page<Cliente> list = service.findPage(page, linePerPage, orderBy, direction);
 		Page<ClienteDTO> listDTO = list.map(obj -> new ClienteDTO(obj));
 		return ResponseEntity.ok(listDTO);
+	}
+
+	@RequestMapping(value="/picture", method=RequestMethod.POST)
+	public ResponseEntity<Void> uploadProfilePicture(@RequestParam(name="file") MultipartFile file) {
+		// Upload do arquivo
+		URI uri = service.uploadProfilePicture(file);
+		// Retorna o objeto atualizado com o código HTTP 201
+		return ResponseEntity.created(uri).build();
 	}
 }

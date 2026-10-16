@@ -21,6 +21,6 @@ public class IonicmcApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        s3Service.uploadFile("C:\\temp\\fotos\\ana.jpg");
+        //s3Service.uploadFile("C:\\temp\\fotos\\ana.jpg");
     }
 }
