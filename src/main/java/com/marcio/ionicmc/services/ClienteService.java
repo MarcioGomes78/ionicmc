@@ -52,6 +52,9 @@ public class ClienteService {
     @Value("${img.prefix.client.profile}")
     private String prefix;
 
+    @Value("${img.profile.size}")
+    private Integer size;
+
     public Cliente find(Integer id) {
 
         UserSS user = UserService.authenticated();
@@ -161,7 +164,14 @@ public class ClienteService {
             throw new AuthorizationException("Acesso negado");
         }
 
+        //pega a imagem e transforma embufferedimage
         BufferedImage jpgImage = imageService.getJpgImageFromFile(multipartFile);
+
+        //corta a imagem para ficar quadrada
+        jpgImage = imageService.cropSquare(jpgImage);
+
+        //redimensiona a imagem
+        jpgImage = imageService.resize(jpgImage, size);
 
         //transforma a imagem em jpg
         String fileName = prefix + user.getId() + ".jpg";

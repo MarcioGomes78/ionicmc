@@ -9,6 +9,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
+import org.imgscalr.Scalr;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,5 +49,16 @@ public class ImageService {
         } catch (IOException e) {
             throw new FileException("Erro ao converter imagem para JPG");
         }
+    }
+
+    public BufferedImage cropSquare(BufferedImage sourceImg) {
+        //Corta a imagem para ficar quadrada, tirando as bordas
+        int min = Math.min(sourceImg.getHeight(), sourceImg.getWidth());
+        //Manda cortar
+        return Scalr.crop(sourceImg, (sourceImg.getWidth() - min) / 2, (sourceImg.getHeight() - min) / 2, min, min);
+    }
+
+    public BufferedImage resize(BufferedImage sourceImg, int size) {
+        return Scalr.resize(sourceImg, Scalr.Method.ULTRA_QUALITY, size);
     }
 }
