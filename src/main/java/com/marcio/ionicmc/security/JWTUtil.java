@@ -1,11 +1,14 @@
-    package com.marcio.ionicmc.security;
+package com.marcio.ionicmc.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
@@ -17,12 +20,16 @@ public class JWTUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    //Gerar token
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    // Gerar token
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS512, secret.getBytes())
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -38,11 +45,12 @@ public class JWTUtil {
         return false;
     }
 
-    // Obter claims? reinvidicações do usuario
+    // Obter claims/reivindicações do usuario
     public Claims getClaims(String token) {
         try {
-            return Jwts.parser()
-                    .setSigningKey(secret.getBytes())
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
